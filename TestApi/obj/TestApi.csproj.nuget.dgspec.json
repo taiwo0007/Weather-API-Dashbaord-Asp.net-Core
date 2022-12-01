@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/taiwo/Projects/TestApi/TestApi/TestApi.csproj": {}
+    "/Users/taiwo/Documents/College/EAD/CA3_EAD/TestApi/TestApi.csproj": {}
   },
   "projects": {
-    "/Users/taiwo/Projects/TestApi/TestApi/TestApi.csproj": {
+    "/Users/taiwo/Documents/College/EAD/CA3_EAD/TestApi/TestApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/taiwo/Projects/TestApi/TestApi/TestApi.csproj",
+        "projectUniqueName": "/Users/taiwo/Documents/College/EAD/CA3_EAD/TestApi/TestApi.csproj",
         "projectName": "TestApi",
-        "projectPath": "/Users/taiwo/Projects/TestApi/TestApi/TestApi.csproj",
+        "projectPath": "/Users/taiwo/Documents/College/EAD/CA3_EAD/TestApi/TestApi.csproj",
         "packagesPath": "/Users/taiwo/.nuget/packages/",
-        "outputPath": "/Users/taiwo/Projects/TestApi/TestApi/obj/",
+        "outputPath": "/Users/taiwo/Documents/College/EAD/CA3_EAD/TestApi/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/taiwo/.nuget/NuGet/NuGet.Config"

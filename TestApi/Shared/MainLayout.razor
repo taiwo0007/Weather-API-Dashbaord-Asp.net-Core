@@ -48,7 +48,7 @@
             <EditForm Model="@weatherApiModel" OnValidSubmit="@HandleValidSubmit">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
-                <InputText @bind-Value="weatherApiModel.Country" id="home-search" class="mt-auto" type="text" placeholder="Enter country name" /><br/>
+                <InputText @bind-Value="weatherApiModel.Country" id="home-search" class="mt-auto" type="text" placeholder="Enter place name" /><br/>
                 <input style="width: 33rem;" class="btn btn-dark mt-3" type="submit" />
                             
             </EditForm>
@@ -70,7 +70,7 @@ else
             <EditForm Model="@weatherApiModel" OnValidSubmit="@HandleValidSubmit">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
-                <InputText id="country" @bind-Value="weatherApiModel.Country" placeholder="Enter country weather here" type="text" />
+                <InputText id="country" @bind-Value="weatherApiModel.Country" placeholder="Enter place name" type="text" />
                 <input style="width: 50%;" class="btn btn-dark mt-5 text-center mx-auto" type="submit" />
 
             </EditForm> 
@@ -86,12 +86,12 @@ else
                 </div>
                 <div class="mt-5 pt-4">
                     <div class="d-flex align-items-center">
-                        <img class="me-3" width="40" src="//cdn.weatherapi.com/weather/64x64/night/143.png" alt="">
-                        <p style="margin: 0 !important" class="fw-bold">Mostly <span>Mist</span> </p>
+                        <img class="me-3" width="40" src="@conditionIcon" alt="">
+                        <p style="margin: 0 !important" class="fw-bold">Mostly <span>@conditionText</span> </p>
                     </div>
                     <div class="d-flex align-items-center">
                         <img class="me-3" width="40" src="./images/rain.png" alt="">
-                        <p style="margin: 0 !important" class="fw-bold">Rain -<span> 48%</span> </p>
+                        <p style="margin: 0 !important" class="fw-bold">Humidity -<span> @humidity%</span> </p>
                     </div>
                 </div>
 
@@ -100,7 +100,7 @@ else
 
       " class="bg-info p-4  rounded mt-5">
                     <div class="my-auto">
-                        <p style="font-size: 1.2rem !important;" class="my-auto text-light text-center fw-bold"><span class="text-info">Ireland</span>, <span>West Virginia</span></p>
+                        <p style="font-size: 1.2rem !important;" class="my-auto text-light text-center fw-bold"><span class="text-light">@countryName</span>, <span>@locationName</span></p>
                     </div>
                 </div>
             </div>
@@ -110,16 +110,16 @@ else
                 <div class="d-flex align-items-center">
                     <p class="h4">Forcast: </p> 
                     <p class="h4 ps-4 fw-bold">@countryName -</p> 
-                    <p class="h4 ps-1 ">14:27 hrs</p>
+                    <p class="h4 ps-1 ">@localTimeFromApiFormatted</p>
                 </div>
                 <div class="row g-5">
                     <div class="col-4">
                         <div class="p-3 bg-white rounded">
                             <p style="color: rgba(0, 0, 0, 0.305) !important" class="text-secondary">UV Index</p>
                             <div class="text-center p-3">
-                                <p class="h1 fw-bold">5.0</p> 
+                                <p class="h1 fw-bold">@uvIndex</p> 
                                 <div class="progress">
-                                    <div class="progress-bar bg-warning" role="progressbar" aria-label="Warning example" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                                    <div class="progress-bar bg-warning" role="progressbar" aria-label="Warning example" style="width: 75%" aria-valuenow="@uvIndex" aria-valuemin="0" aria-valuemax="10"></div>
                                 </div>
                             </div>
                         </div>
@@ -128,7 +128,7 @@ else
                         <div class="p-3 bg-white rounded">
                             <p style="color: rgba(0, 0, 0, 0.305) !important" class="text-secondary">Precipitation</p>
                             <div class="text-center p-3">
-                                <p><span class="h1 fw-bold">0.0</span>  mm</p>
+                                <p><span class="h1 fw-bold">@precipitation</span>  mm</p>
                             </div>
                         </div>
                     </div>
@@ -136,7 +136,7 @@ else
                         <div class="p-3 bg-white rounded">
                             <p style="color: rgba(0, 0, 0, 0.305) !important" class="text-secondary">Humidity</p>
                             <div class="text-center p-3">
-                                <p><span class="h1 fw-bold">0</span>  %</p>
+                                <p><span class="h1 fw-bold">@humidity</span>  %</p>
                             </div>
                         </div>
                     </div>
@@ -146,7 +146,7 @@ else
                         <div class="p-3 bg-white rounded">
                             <p style="color: rgba(0, 0, 0, 0.305) !important" class="text-secondary">Wind</p>
                             <div class="text-center p-3">
-                                <p><span class="h1 fw-bold text-primary">9.40</span>  mph</p> 
+                                <p><span class="h1 fw-bold text-primary">@windMph</span>  mph</p> 
     
                             </div>
                         </div>
@@ -155,7 +155,7 @@ else
                         <div class="p-3 bg-white rounded">
                             <p style="color: rgba(0, 0, 0, 0.305) !important" class="text-secondary">Wind degree</p>
                             <div class="text-center p-3">
-                                <p><span class="h1 fw-bold text-primary">180</span>  °</p> 
+                                <p><span class="h1 fw-bold text-primary">@windDegree</span>  °</p> 
     
                             </div>
                         </div>
@@ -165,7 +165,7 @@ else
                             <p style="color: rgba(0, 0, 0, 0.305) !important" class="text-secondary">Wind Direction</p>
                             <div class="text-center p-3">
                                 <p><span class="h1 fw-bold text-primary">
-                                    S <i class="fa fa-compass text-danger" aria-hidden="true"></i></span> </p> 
+                                    @windDirection <i class="fa fa-compass text-danger" aria-hidden="true"></i></span> </p> 
                             </div>
                         </div>
                     </div>
@@ -175,7 +175,7 @@ else
                         <div class="p-3 bg-white rounded">
                             <p style="color: rgba(0, 0, 0, 0.305) !important" class="text-secondary">Pressure</p>
                             <div class="text-center p-3">
-                                <p><span class="h1 fw-bold text-info">0.0</span>  in</p> 
+                                <p><span class="h1 fw-bold text-info">@pressure</span>  in</p> 
 
                             </div>
                         </div>
@@ -185,7 +185,7 @@ else
                             <p style="color: rgba(0, 0, 0, 0.305) !important" class="text-secondary">Gust</p>
                             <div class="text-center p-3">
                                 <p><span class="h1 fw-bold">
-                                    4.7 </span> mph</p> 
+                                    @gust </span> mph</p> 
 
                             </div>
                         </div>
@@ -195,22 +195,38 @@ else
                             <p style="color: rgba(0, 0, 0, 0.305) !important" class="text-secondary">Feels Like</p>
                             <div class="text-center p-3">
                                 <p><span class="h1 fw-bold">
-                                    15.4 °C</span></p>
+                                    @feelsLike °C</span></p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-    <p>@log</p>
     </div>
 }
 @code {
-
-    private String log;
-    private string? countryName;
-    private String? temperature;
+    
+    //Values kept ot just string as we do not need to do any calculations with the returned values
+    //but to just display it to the user opon valid form submission
+    
+    private String log { get; set; }
+    private string? countryName { get; set; }
+    private string? regionName { get; set; }
+    private string? temperature { get; set; }
+    private string? locationName { get; set;  }
+    private string? conditionIcon { get; set; }
+    private string? conditionText { get; set; }
+    private string? windMph { get; set; }
+    private string? windDegree { get; set; }
+    private string? windDirection { get; set; }
+    private string? pressure { get; set; }
+    private string? precipitation { get; set; }
+    private string? humidity { get; set; }
+    private string? feelsLike { get; set; }
+    private string? uvIndex { get; set; }
+    private string? gust { get; set; }
+    private string? localTimeFromApi { get; set; }
+    private string? localTimeFromApiFormatted { get; set; }
     
     private String name;
 
@@ -223,26 +239,14 @@ else
         Http.DefaultRequestHeaders.Add("X-RapidAPI-Host", "weatherapi-com.p.rapidapi.com");
         Http.DefaultRequestHeaders.Accept.Add(headers);
     }
-    
-
     private void HandleValidSubmit()
     {
-        
-        
         callApi(weatherApiModel.Country);
-
-
     }
 
     protected async Task callApi(String country)
     {
-        
-        
-        
         var json = await Http.GetAsync($"https://weatherapi-com.p.rapidapi.com/current.json?q='{country}");
-        
-       
-
         String responseBody = await json.Content.ReadAsStringAsync();
 
         var jsonObject = JsonNode.Parse(responseBody).AsObject();
@@ -250,10 +254,31 @@ else
         log = jsonObject.ToString();
 
         
-         name = jsonObject["current"]["temp_c"].ToString();
-        temperature = jsonObject["current"]["temp_c"].ToString();
+        locationName = jsonObject["location"]["name"].ToString();
+        regionName = jsonObject["location"]["region"].ToString();
         countryName = jsonObject["location"]["country"].ToString();
+        temperature = jsonObject["current"]["temp_c"].ToString();
+        localTimeFromApi = jsonObject["location"]["localtime"].ToString();
+        localTimeFromApiFormatted = localTimeFromApi.Substring(localTimeFromApi.Length - 5);
+        
+        conditionIcon = jsonObject["current"]["condition"]["icon"].ToString();
+        conditionText = jsonObject["current"]["condition"]["text"].ToString();
+        
 
+        
+        windMph = jsonObject["current"]["wind_mph"].ToString();
+        windDegree = jsonObject["current"]["wind_degree"].ToString();
+        windDirection = jsonObject["current"]["wind_dir"].ToString();
+        pressure = jsonObject["current"]["pressure_in"].ToString();
+        humidity = jsonObject["current"]["humidity"].ToString();
+        precipitation = jsonObject["current"]["precip_in"].ToString();
+        feelsLike = jsonObject["current"]["feelslike_c"].ToString();
+        uvIndex = jsonObject["current"]["uv"].ToString();
+        gust = jsonObject["current"]["gust_mph"].ToString();
+
+        
+        
+        
         name = jsonObject.ToString();
     }
 
