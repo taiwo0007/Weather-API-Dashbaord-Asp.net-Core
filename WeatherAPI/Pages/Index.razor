@@ -1,0 +1,262 @@
+﻿@page "/"
+@inherits LayoutComponentBase
+@using System.Text.Json.Nodes
+@inject HttpClient Http
+@inject System.Net.Http.Headers.MediaTypeWithQualityHeaderValue Headers
+
+<style>
+*{
+
+overflow-x: hidden;
+
+}
+    #country{
+        position: fixed;
+        border-bottom: 1px solid rgba(118, 120, 120, 0.58);
+        border-top: 0 solid;
+        border-left: 0 solid;
+        border-right: 0 solid;
+        width: 12%;
+        transition: 0.2s ease-in-out;
+    }
+    #country:focus{
+        border-bottom: 3px solid black;
+    
+    }
+     #home-search{
+    
+              border-bottom: 1px solid rgba(118, 120, 120, 0.58);
+              border-top: 0 solid;
+              border-left: 0 solid;
+              border-right: 0 solid;
+              width: 33rem;
+              font-size: 4rem;
+            
+              transition: 0.2s ease-in-out;
+          }
+          #home-search::placeholder{
+              color: rgba(0, 0, 0, 0.149);
+          
+          }
+          #home-search:focus{
+              border-bottom: 3px solid black;
+          
+          }
+</style>
+
+@if (_weatherApiModel.LocationName == null)
+{
+    <div style="height: 100vh !important; margin: auto auto !important;" class="container-fluid  text-center">
+
+        <div style="padding-top: 30vh !important;" >
+            
+            <EditForm Model="@_weatherApiModel" OnValidSubmit="@HandleValidSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <InputText @bind-Value="_weatherApiModel.PlaceName" id="home-search" class="mt-auto" type="text" placeholder="Enter place name" /><br/>
+                               <button style="width: 33rem;" class="btn btn-dark mt-3" type="submit"> submit</button>
+            </EditForm>
+            
+        </div>
+    </div>
+
+    
+    
+}
+else
+{
+    
+    <div style="height: 100vh !important;" class="container-fluid row">
+        <!-- https://dribbble.com/shots/10460680-Weather-App -->
+
+        <div class="col-3 p-5">
+        
+            <EditForm Model="@_weatherApiModel" OnValidSubmit="@HandleValidSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <InputText id="country" @bind-Value="_weatherApiModel.PlaceName" placeholder="Enter place name" type="text" />
+                <button type="submit" style="width: 50%;" class="btn btn-dark mt-5 text-center mx-auto">Submit</button>
+
+            </EditForm> 
+            <div style="height: 90vh">
+                <div>
+                    <img class="pt-5" width="200" src="./images/weathervector.png" alt="">
+                </div>
+                <div>
+                    <p > <span style="font-size: 6rem">@_weatherApiModel.Temperature</span>  °C</p>
+                </div>
+                <div>
+                    <p style="font-size: 1.5rem"><span class="fw-bold">@DateTime.Now.DayOfWeek</span>, <span class="text-secondary">@DateTime.Now.Hour:@DateTime.Now.Minute</span></p>
+                </div>
+                <div class="mt-5 pt-4">
+                    <div class="d-flex align-items-center">
+                        <img class="me-3" alt="Weather condition Icon" width="40" src="@_weatherApiModel.ConditionIcon">
+                        <p style="margin: 0 !important" class="fw-bold">Condition: <span>@_weatherApiModel.ConditionText</span> </p>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <img class="me-3" width="40" src="https://img.icons8.com/arcade/64/null/heavy-rain.png" alt="">
+                        <p style="margin: 0 !important" class="fw-bold">Humidity - <span> @_weatherApiModel.Humidity%</span> </p>
+                    </div>
+                </div>
+
+                <div class="bg-info p-4  rounded mt-5">
+                    <div class="my-auto">
+                        <p style="font-size: 1.2rem !important;" class="my-auto text-light text-center fw-bold">
+                            <span class="text-light">@_weatherApiModel.CountryName</span>, 
+                            <span>@_weatherApiModel.LocationName</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-9 bg-light p-5">
+            <div >
+                <div class="d-flex align-items-center">
+                    <p class="h4">Forcast: </p> 
+                    <p class="h4 ps-4 fw-bold">@_weatherApiModel.CountryName -</p> 
+                    <p class="h4 ps-1 ">@_weatherApiModel.LocalTimeFromApiFormatted</p>
+                </div>
+                <div class="row g-5">
+                    <div class="col-4">
+                        <div class="p-3 bg-white rounded">
+                            <p style="color: rgba(0, 0, 0, 0.305) !important" class="text-secondary">UV Index</p>
+                            <div class="text-center p-3">
+                                <p class="h1 fw-bold">@_weatherApiModel.UvIndex</p> 
+                                <div class="progress">
+                                    <div class="progress-bar bg-warning" role="progressbar" aria-label="Warning example" style="width: 75%" aria-valuenow="@_weatherApiModel.UvIndex" aria-valuemin="0" aria-valuemax="10"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 bg-white rounded">
+                            <p style="color: rgba(0, 0, 0, 0.305) !important" class="text-secondary">Precipitation</p>
+                            <div class="text-center p-3">
+                                <p><span class="h1 fw-bold">@_weatherApiModel.Precipitation</span>  mm</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 bg-white rounded">
+                            <p style="color: rgba(0, 0, 0, 0.305) !important" class="text-secondary">Humidity</p>
+                            <div class="text-center p-3">
+                                <p><span class="h1 fw-bold"> @_weatherApiModel.Humidity</span>  %</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-5 mt-1">
+                    <div class="col-4">
+                        <div class="p-3 bg-white rounded">
+                            <p style="color: rgba(0, 0, 0, 0.305) !important" class="text-secondary">Wind</p>
+                            <div class="text-center p-3">
+                                <p><span class="h1 fw-bold text-primary">@_weatherApiModel.WindMph</span>  mph</p> 
+    
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 bg-white rounded">
+                            <p style="color: rgba(0, 0, 0, 0.305) !important" class="text-secondary">Wind degree</p>
+                            <div class="text-center p-3">
+                                <p><span class="h1 fw-bold text-primary">@_weatherApiModel.WindDegree</span>  °</p> 
+    
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 bg-white rounded">
+                            <p style="color: rgba(0, 0, 0, 0.305) !important" class="text-secondary">Wind Direction</p>
+                            <div class="text-center p-3">
+                                <p><span class="h1 fw-bold text-primary">
+                                    @_weatherApiModel.WindDirection <i class="fa fa-compass text-danger" aria-hidden="true"></i></span> </p> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-5 mt-1">
+                    <div class="col-4">
+                        <div class="p-3 bg-white rounded">
+                            <p style="color: rgba(0, 0, 0, 0.305) !important" class="text-secondary">Pressure</p>
+                            <div class="text-center p-3">
+                                <p><span class="h1 fw-bold text-info">@_weatherApiModel.Pressure</span>  in</p> 
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 bg-white rounded">
+                            <p style="color: rgba(0, 0, 0, 0.305) !important" class="text-secondary">Gust</p>
+                            <div class="text-center p-3">
+                                <p><span class="h1 fw-bold">
+                                    @_weatherApiModel.Gust </span> mph</p> 
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 bg-white rounded">
+                            <p style="color: rgba(0, 0, 0, 0.305) !important" class="text-secondary">Feels Like</p>
+                            <div class="text-center p-3">
+                                <p><span class="h1 fw-bold">
+                                    @_weatherApiModel.FeelsLike °C</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@code {
+    
+    //Values kept ot just string as we do not need to do any calculations with the returned values
+    //but to just display it to the user upon valid form submission
+
+    private WeatherApiModel? _weatherApiModel = new WeatherApiModel();
+    private bool _isHeader;
+   
+    private void HandleValidSubmit()
+    {
+        CallApi(_weatherApiModel.PlaceName);
+    }
+
+    private async Task CallApi(String country)
+    {
+        
+        if (_isHeader!= true)
+        {
+            Http.DefaultRequestHeaders.Add("X-RapidAPI-Key", "7ac8da929cmsh5be541b7b0dc3c8p18afb3jsn65ff0d02c66c");
+            Http.DefaultRequestHeaders.Add("X-RapidAPI-Host", "weatherapi-com.p.rapidapi.com");
+            Http.DefaultRequestHeaders.Accept.Add(Headers);
+            _isHeader = true;
+        }
+        var json = await Http.GetAsync($"https://weatherapi-com.p.rapidapi.com/current.json?q='{country}");
+        String responseBody = await json.Content.ReadAsStringAsync();
+
+        var jsonObject = JsonNode.Parse(responseBody).AsObject();
+        
+        _weatherApiModel.LocationName = jsonObject["location"]["name"].ToString();
+        _weatherApiModel.CountryName = jsonObject["location"]["country"].ToString();
+        _weatherApiModel.Temperature = jsonObject["current"]["temp_c"].ToString();
+        _weatherApiModel.LocalTimeFromApi = jsonObject["location"]["localtime"].ToString();
+        _weatherApiModel.LocalTimeFromApiFormatted = _weatherApiModel.LocalTimeFromApi.Substring(_weatherApiModel.LocalTimeFromApi.Length - 5);
+        
+        _weatherApiModel.ConditionIcon = jsonObject["current"]["condition"]["icon"].ToString();
+        _weatherApiModel.ConditionText = jsonObject["current"]["condition"]["text"].ToString();
+        
+        _weatherApiModel.WindMph = jsonObject["current"]["wind_mph"].ToString();
+        _weatherApiModel.WindDegree = jsonObject["current"]["wind_degree"].ToString();
+        _weatherApiModel.WindDirection = jsonObject["current"]["wind_dir"].ToString();
+        _weatherApiModel.Pressure = jsonObject["current"]["pressure_in"].ToString();
+        _weatherApiModel.Humidity = jsonObject["current"]["humidity"].ToString();
+        _weatherApiModel.Precipitation = jsonObject["current"]["precip_in"].ToString();
+        _weatherApiModel.FeelsLike = jsonObject["current"]["feelslike_c"].ToString();
+        _weatherApiModel.UvIndex = jsonObject["current"]["uv"].ToString();
+        _weatherApiModel.Gust = jsonObject["current"]["gust_mph"].ToString();
+        
+    }
+
+  
+}
+
